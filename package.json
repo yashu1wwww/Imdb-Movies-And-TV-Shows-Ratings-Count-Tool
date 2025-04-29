@@ -1,0 +1,18 @@
+{
+  "name": "movie-rating-search",
+  "version": "1.0.0",
+  "description": "A web app that scrapes movie ratings from Google search using Puppeteer",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "express": "^4.18.1",
+    "puppeteer": "^19.0.0"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "author": "",
+  "license": "ISC"
+}
