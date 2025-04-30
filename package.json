@@ -1,5 +1,6 @@
+
 {
-  "name": "movie-rating-scraper",
+  "name": "imdb movies & tv shows rating count",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
