@@ -1,7 +1,7 @@
 const express = require('express');
 const puppeteer = require('puppeteer');
 const app = express();
-const port = process.env.PORT || 3000;
+const port = 3000;
 
 // Serve static files if needed
 app.use(express.static(__dirname));
