@@ -1,13 +1,9 @@
 {
-  "name": "imdb-ratings-app",
+  "name": "IMDb Movie and TV Show Ratings Count Tool",
   "version": "1.0.0",
-  "description": "IMDb Movie and TV Show Ratings Count Tool",
   "main": "index.js",
   "scripts": {
     "start": "node index.js"
-  },
-  "engines": {
-    "node": ">=16.0.0"
   },
   "dependencies": {
     "express": "^4.19.2",
