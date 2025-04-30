@@ -1,12 +1,20 @@
 {
-  "name": "movie-rating-scraper",
+  "name": "movie-rating-search",
   "version": "1.0.0",
+  "description": "A movie rating search app using Puppeteer",
   "main": "index.js",
   "scripts": {
     "start": "node index.js"
   },
   "dependencies": {
     "express": "^4.19.2",
-    "puppeteer": "^23.3.0"
-  }
+    "puppeteer-core": "^23.3.0",
+    "chrome-aws-lambda": "^10.1.0"
+  },
+  "engines": {
+    "node": "14.x"
+  },
+  "devDependencies": {},
+  "author": "",
+  "license": "ISC"
 }
