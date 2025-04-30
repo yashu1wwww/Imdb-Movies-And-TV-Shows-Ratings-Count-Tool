@@ -92,7 +92,7 @@ app.get('/', (req, res) => {
   <a href="https://github.com/yashu1wwww" target="_blank" style="color: #007bff; text-decoration: none;">Yashwanth R</a>
 </p>
             </div>
-            <input type="text" id="query" name="query" value="${movieQuery}" placeholder="   Ex: RRR or RRR Telugu" class="px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:border-blue-400 focus:ring-blue-400">
+            <input type="text" id="query" name="query" value="${movieQuery}" placeholder="   Ex: RRR or RRR Telugu" class="px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:border-blue-400 focus:ring-blue-400" onfocus="this.value = ''; document.getElementById('rating').innerHTML = '';">
             <br>
             <button type="submit" class="px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:bg-blue-600">
               Search
@@ -101,7 +101,7 @@ app.get('/', (req, res) => {
         </div>
         <!-- Display IMDb Rating Inside the Form -->
         ${searchResult ? `
-          <div style="margin-top: 20px; padding: 10px; color: black; background-color: rgba(255, 255, 255, 0.7); border-radius: 10px;">
+          <div id="rating" style="margin-top: 20px; padding: 10px; color: black; background-color: rgba(255, 255, 255, 0.7); border-radius: 10px;">
             <strong>Rating:</strong> ${searchResult}
           </div>
         ` : ''}
@@ -146,18 +146,27 @@ app.get('/search', async (req, res) => {
   });
 
   // Use Google to search with "movie rating" prepended
-  const searchUrl = `https://www.google.com/search?q=movie+rating+${encodeURIComponent(query)}`;
+ const searchUrl = `https://www.google.com/search?q=movie+rating+${encodeURIComponent(query)}`;
   await page.goto(searchUrl, {
     waitUntil: 'domcontentloaded',
     timeout: 10000
   });
 
-  let rating;
+ let rating;
+try {
+  // Try first div (span.gsrt.KMdzJ)
+  rating = await page.$eval('span.gsrt.KMdzJ', el => el.textContent.trim());
+} catch {
+  // If not found, try second div (span.yi40Hd.YrbPuc)
   try {
-    rating = await page.$eval('span.gsrt.KMdzJ', el => el.textContent.trim());
+    rating = await page.$eval('span.yi40Hd.YrbPuc', el => el.textContent.trim());
   } catch {
+    // If both are not found, set 'Rating not found'
     rating = 'Rating not found';
   }
+}
+
+console.log('Rating:', rating);
 
   await browser.close();
 
