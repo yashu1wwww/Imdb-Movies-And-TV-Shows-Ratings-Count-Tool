@@ -2,6 +2,6 @@
 
 # Enter Movie Name or tv shows to get ratings...
 
-## Scraping ratings from Google search result using the div class to fetch the data.
+## Ratings are scraped from Google search results using the div class. However, if Google updates its structure, the div class used for extraction may also change.
 
 ## "This tool is built for educational and personal use only. It scrapes publicly available data and does not store or misuse any third-party content."
