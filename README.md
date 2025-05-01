@@ -1,4 +1,4 @@
-# Imdb-Movies-Ratings-And-TV-Shows-Count-Tool
+# Imdb-Movies-And-TV-Shows-Ratings-Count-Tool
 
 # Enter Movie Name or tv shows to get ratings...
 
