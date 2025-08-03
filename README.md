@@ -4,8 +4,7 @@
 
 # Ratings Count
 
-![Ratings](https://raw.githubusercontent.com/yashu1wwww/Bookmyshow-Movies-Ratings-And-Interest-Count-Tool/refs/heads/main/Screenshot_2025-08-03_12_50_45%7E2.png)
-
+![Ratings](https://raw.githubusercontent.com/yashu1wwww/Imdb-Movies-And-TV-Shows-Ratings-Count-Tool/refs/heads/main/Screenshot_2025-08-03_12_48_54%7E2.png)
 
 # Note:
 
