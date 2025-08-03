@@ -2,7 +2,7 @@
 
 # Enter Movie Name or tv shows to get ratings...
 
-# Ratings Count
+# Ratings Count :
 
 ![Ratings](https://raw.githubusercontent.com/yashu1wwww/Imdb-Movies-And-TV-Shows-Ratings-Count-Tool/refs/heads/main/Screenshot_2025-08-03_12_48_54%7E2.png)
 
