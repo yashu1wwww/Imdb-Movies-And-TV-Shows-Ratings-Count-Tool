@@ -19,93 +19,389 @@ app.get('/', (req, res) => {
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <title>IMDB MOVIES & TV SHOWS RATINGS COUNT</title>
       <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+      <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
       <link rel="icon" href="https://favicon-generator.org/favicon-generator/htdocs/favicons/2015-02-02/042180ff74ed65b9baae3da9a0c8f809.ico" type="image/x-icon">
       <style>
-        html, body {
-          overflow: hidden;
+        * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
         }
+        
+        html, body {
+          overflow-x: hidden;
+          min-height: 100vh;
+        }
+        
         body {
-          font-family: 'Arial', sans-serif;
+          font-family: 'Poppins', sans-serif;
           display: flex;
           justify-content: center;
           align-items: center;
-          height: 100vh;
+          min-height: 100vh;
           margin: 0;
-          background-image: url('https://wallpaperaccess.com/full/1567770.gif');
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
           background-size: cover;
           background-position: center;
+          background-attachment: fixed;
           color: white;
           flex-direction: column;
           text-align: center;
+          padding: 20px;
+          position: relative;
+        }
+        
+        body::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: linear-gradient(45deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
+          pointer-events: none;
+        }
+        
+        .main-container {
+          position: relative;
+          z-index: 1;
+          animation: fadeInUp 1s ease-out;
+        }
+        
+        @keyframes fadeInUp {
+          from {
+            opacity: 0;
+            transform: translateY(30px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        
+        .header-section {
+          margin-bottom: 30px;
+        }
+        
+        .imdb-logo {
+          height: 40px;
+          width: 80px;
+          margin-bottom: 15px;
+          filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
+          transition: transform 0.3s ease;
+        }
+        
+        .imdb-logo:hover {
+          transform: scale(1.1);
+        }
+        
+        .main-title {
+          background: linear-gradient(45deg, #fffeff, #ffd891, #ffc1b5a8);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+          font-size: 1.5rem;
+          font-weight: 700;
+          text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+          margin-bottom: 20px;
+          animation: shimmer 2s infinite;
+        }
+        
+        @keyframes shimmer {
+          0% { background-position: -200% center; }
+          100% { background-position: 200% center; }
+        }
+        
         }
         form {
           display: flex;
           flex-direction: column;
           align-items: center;
-          background-color: rgba(225, 168, 168, 0.16);
-          padding: 83px;
-          border-radius: 39px;
+          background: rgba(255, 255, 255, 0.1);
+          backdrop-filter: blur(20px);
+          border: 1px solid rgba(255, 255, 255, 0.2);
+          padding: 40px;
+          border-radius: 25px;
+          box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+          transition: all 0.3s ease;
+          max-width: 500px;
+          width: 100%;
         }
+        
+        form:hover {
+          transform: translateY(-5px);
+          box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+        }
+        
+        .visitors-section {
+          margin: 20px 0;
+          padding: 20px;
+          background: rgba(255, 255, 255, 0.05);
+          border-radius: 15px;
+          border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .visitors-title {
+          color: #FFD700;
+          font-weight: 600;
+          margin-bottom: 15px;
+          font-size: 1.1rem;
+        }
+        
+        .counter-widget {
+          transition: transform 0.3s ease;
+        }
+        
+        .counter-widget:hover {
+          transform: scale(1.05);
+        }
+        
+        .web-projects-btn {
+          background: linear-gradient(45deg, #667eea, #764ba2);
+          border: 2px solid rgba(255, 255, 255, 0.3);
+          border-radius: 12px;
+          padding: 12px 24px;
+          margin: 15px 0;
+          transition: all 0.3s ease;
+          position: relative;
+          overflow: hidden;
+        }
+        
+        .web-projects-btn::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: -100%;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+          transition: left 0.5s;
+        }
+        
+        .web-projects-btn:hover::before {
+          left: 100%;
+        }
+        
+        .web-projects-btn:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .web-projects-btn a {
+          color: white;
+          text-decoration: none;
+          font-weight: 600;
+          font-size: 1rem;
+          position: relative;
+          z-index: 1;
+        }
+        
+        .developer-credit {
+          margin-top: 15px;
+          font-size: 0.9rem;
+          color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .developer-credit a {
+          color: #FFD700;
+          text-decoration: none;
+          font-weight: 600;
+          transition: color 0.3s ease;
+        }
+        
+        .developer-credit a:hover {
+          color: #FFA500;
+        }
+        
+        .search-section {
+          margin-top: 20px;
+        }
+        
+        .input-group {
+          position: relative;
+          margin-bottom: 25px;
+        }
+        
         input[type="text"] {
-          padding: 8px;
-          margin-bottom: 27px;
-          width: 317px;
-          border: 1px solid #283147;
-          border-radius: 18px;
-          background-color: rgba(255, 255, 255, 0.8);
-          color: #333;
+          width: 100%;
+          padding: 15px 20px 15px 50px;
+          border: 2px solid rgba(255, 255, 255, 0.3);
+          border-radius: 25px;
+          background: rgba(255, 255, 255, 0.1);
+          backdrop-filter: blur(10px);
+          color: white;
+          font-size: 1rem;
+          font-weight: 400;
+          transition: all 0.3s ease;
+          outline: none;
         }
+        
+        input[type="text"]::placeholder {
+          color: rgba(255, 255, 255, 0.7);
+        }
+        
+        input[type="text"]:focus {
+          border-color: #FFD700;
+          box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+          transform: translateY(-2px);
+        }
+        
+        .search-icon {
+          position: absolute;
+          left: 18px;
+          top: 50%;
+          transform: translateY(-50%);
+          color: rgba(255, 255, 255, 0.7);
+          font-size: 1.1rem;
+        }
+        
         button {
-          padding: 8px 16px;
-          background-color: #007bff;
+          background: linear-gradient(45deg, #FFD700, #FFA500);
           color: white;
           border: none;
-          border-radius: 4px;
+          border-radius: 25px;
+          padding: 15px 30px;
+          font-size: 1rem;
+          font-weight: 600;
           cursor: pointer;
+          transition: all 0.3s ease;
+          position: relative;
+          overflow: hidden;
+          min-width: 150px;
         }
+        
+        button::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: -100%;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+          transition: left 0.5s;
+        }
+        
+        button:hover::before {
+          left: 100%;
+        }
+        
         button:hover {
-          background-color: #0056b3;
+          transform: translateY(-3px);
+          box-shadow: 0 15px 30px rgba(255, 165, 0, 0.4);
+        }
+        
+        button:active {
+          transform: translateY(-1px);
+        }
+        
+        .rating-result {
+          margin-top: 25px;
+          padding: 20px;
+          background: linear-gradient(45deg, rgba(255, 215, 0, 0.1), rgba(255, 165, 0, 0.1));
+          border: 2px solid rgba(255, 215, 0, 0.3);
+          border-radius: 15px;
+          backdrop-filter: blur(10px);
+          animation: slideIn 0.5s ease-out;
+        }
+        
+        @keyframes slideIn {
+          from {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        
+        .rating-result strong {
+          color: #FFD700;
+          font-size: 1.1rem;
+        }
+        
+        .rating-value {
+          color: #FFA500;
+          font-weight: 700;
+          font-size: 1.2rem;
+        }
+        
+        @media (max-width: 768px) {
+          body {
+            padding: 10px;
+          }
+          
+          form {
+            padding: 30px 20px;
+          }
+          
+          .main-title {
+            font-size: 1.2rem;
+          }
+          
+          input[type="text"] {
+            padding: 12px 15px 12px 45px;
+          }
+          
+          button {
+            padding: 12px 25px;
+          }
         }
       </style>
     </head>
     <body>
-      <form action="/search" method="get" class="space-y-2">
-        <div style="text-align: center;">
-          <img src="https://e7.pngegg.com/pngimages/705/448/png-clipart-logo-imdb-film-logan-lerman-miscellaneous-celebrities-thumbnail.png" alt="IMDB Icon" style="height: 20px; width: 45px; display: inline-block;">
-          <label for="query" class="text-lg font-bold" style="color: black; text-decoration: underline; font-size: 14px; display: inline-block; vertical-align: middle;">MOVIES &amp; TV SHOWS RATINGS COUNT</label>
-          <br><br>
-          <div style="text-align: center;">
-            <label for="query" class="text-lg font-bold" style="color: #813333e0;">VISITORS COUNT</label>
-            <br><br>
-            <a href="https://www.hitwebcounter.com" target="_blank" style="display: inline-block;">
-              <img src="https://hitwebcounter.com/counter/counter.php?page=13817460&amp;style=0006&amp;nbdigits=2&amp;type=page&amp;initCount=20" title="Counter Widget" alt="Visit counter For Websites" border="0">
-            </a>
-            <br>
-            <div class="container" style="margin-top: 20px; text-align: center;">
-              <button style="background-color: #00000000; padding: 10px 20px; margin-right: 1px;">
-                <a href="https://yashwanthwebproject.netlify.app" style="color: black; text-decoration: none; font-size: 18px; font-weight: bold; display: block; background-color: inherit; border: 2px solid white; border-radius: 5px; padding: 5px;">
-                  Web Development Projects
-                </a>
-              </button>
-<p style="margin-top: 10px; font-size: 14px; color: black; font-weight: bold; text-align: center;">
-  <span style="color: black;">Designed &amp; Developed By</span> 
-  <a href="https://github.com/yashu1wwww" target="_blank" style="color: #007bff; text-decoration: none;">Yashwanth R</a>
-</p>
+      <div class="main-container">
+        <form action="/search" method="get">
+          <div class="header-section">
+            <img src="https://e7.pngegg.com/pngimages/705/448/png-clipart-logo-imdb-film-logan-lerman-miscellaneous-celebrities-thumbnail.png" alt="IMDB Icon" class="imdb-logo">
+            <div class="main-title">
+              <i class="fas fa-star"></i> MOVIES & TV SHOWS RATINGS COUNT <i class="fas fa-star"></i>
             </div>
-            <input type="text" id="query" name="query" value="${movieQuery}" placeholder="   Ex: RRR or RRR Telugu" class="px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:border-blue-400 focus:ring-blue-400" onfocus="this.value = ''; document.getElementById('rating').innerHTML = '';">
-            <br>
-            <button type="submit" class="px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:bg-blue-600">
+          </div>
+          
+          <div class="visitors-section">
+            <div class="visitors-title">
+              <i class="fas fa-users"></i> VISITORS COUNT
+            </div>
+            <a href="https://www.hitwebcounter.com" target="_blank" class="counter-widget" style="display: inline-block;">
+              <img src="https://hitwebcounter.com/counter/counter.php?page=13817460&style=0006&nbdigits=2&type=page&initCount=20" title="Counter Widget" alt="Visit counter For Websites" border="0" style="border-radius: 8px;">
+            </a>
+            
+            <div class="web-projects-btn">
+              <a href="https://yashwanthwebproject.netlify.app" target="_blank">
+                <i class="fas fa-code"></i>
+                  Web Development Projects
+              </a>
+            </div>
+            
+            <div class="developer-credit">
+              <span>Designed & Developed By</span> 
+              <a href="https://github.com/yashu1wwww" target="_blank">Yashwanth R</a>
+            </div>
+          </div>
+          
+          <div class="search-section">
+            <div class="input-group">
+              <i class="fas fa-search search-icon"></i>
+              <input type="text" id="query" name="query" value="${movieQuery}" placeholder="Ex: RRR or RRR Telugu" onfocus="this.value = ''; const ratingEl = document.getElementById('rating'); if(ratingEl) ratingEl.innerHTML = '';">
+            </div>
+            
+            <button type="submit">
+              <i class="fas fa-film"></i>
               Search
             </button>
           </div>
-        </div>
-        <!-- Display IMDb Rating Inside the Form -->
-        ${searchResult ? `
-          <div id="rating" style="margin-top: 20px; padding: 10px; color: black; background-color: rgba(255, 255, 255, 0.7); border-radius: 10px;">
-            <strong>Rating:</strong> ${searchResult}
-          </div>
-        ` : ''}
-      </form>
+          
+          <!-- Display IMDb Rating Inside the Form -->
+          ${searchResult ? `
+            <div id="rating" class="rating-result">
+              <i class="fas fa-star" style="color: #FFD700; margin-right: 8px;"></i>
+              <strong>Rating:</strong> <span class="rating-value">${searchResult}</span>
+            </div>
+          ` : ''}
+        </form>
+      </div>
     </body>
     </html>
   `);
