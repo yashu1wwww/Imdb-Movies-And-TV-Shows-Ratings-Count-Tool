@@ -2,6 +2,11 @@
 
 # Enter Movie Name or tv shows to get ratings...
 
+# To Run These On System Install Nodejs and 
+install required packages in code and run
+
+
+
 # Note:
 
 ## Ratings are scraped from Google search results using the div class. However, if Google updates its structure, the div class used for extraction may also change.
