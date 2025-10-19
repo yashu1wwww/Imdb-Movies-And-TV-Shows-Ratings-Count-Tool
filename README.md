@@ -2,7 +2,10 @@
 
 # Enter Movie Name or tv shows to get ratings...
 
-## To run this on your system, install Node.js, install the required packages in the project
+## To run this on your system,
+
+install Node.js, 
+install the required packages in the project
 
 ## And then execute node index.js inside the code folder
 
