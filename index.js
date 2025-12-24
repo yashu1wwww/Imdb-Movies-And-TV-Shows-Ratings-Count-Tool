@@ -21,7 +21,7 @@ app.get('/', (req, res) => {
       <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
       <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-      <link rel="icon" href="https://favicon-generator.org/favicon-generator/htdocs/favicons/2015-02-02/042180ff74ed65b9baae3da9a0c8f809.ico" type="image/x-icon">
+      <link rel="icon" href="https://e7.pngegg.com/pngimages/705/448/png-clipart-logo-imdb-film-logan-lerman-miscellaneous-celebrities-thumbnail.png" type="image/x-icon">
       <style>
         * {
           margin: 0;
@@ -408,65 +408,80 @@ app.get('/', (req, res) => {
 });
 
 app.get('/search', async (req, res) => {
-  const query = req.query.query;
+  const query = (req.query.query || '').trim();
   if (!query) return res.redirect('/');
 
-  const browser = await puppeteer.launch({
-    headless: true,
-    args: [
-      '--no-sandbox',
-      '--disable-setuid-sandbox',
-      '--disable-blink-features=AutomationControlled',
-      '--disable-dev-shm-usage',
-    ],
-    defaultViewport: { width: 1280, height: 800 }
-  });
+const browser = await puppeteer.launch({
+  headless: true,
+  args: [
+    '--no-sandbox',
+    '--disable-setuid-sandbox',
+    '--disable-dev-shm-usage',
+    '--disable-gpu',
+    '--single-process',
+    '--no-zygote',
+    '--disable-web-security',
+    '--disable-features=VizDisplayCompositor'
+  ],
+  executablePath: process.env.RENDER
+    ? '/opt/render/project/src/node_modules/puppeteer/.local-chromium/linux-*/chrome-linux/chrome'
+    : undefined,
+});
 
   const page = await browser.newPage();
 
   await page.setRequestInterception(true);
-  page.on('request', (request) => {
-    const blockTypes = ['image', 'stylesheet', 'font', 'media'];
-    if (blockTypes.includes(request.resourceType())) {
-      request.abort();
+  page.on('request', (req) => {
+    if (['image', 'stylesheet', 'font', 'media'].includes(req.resourceType())) {
+      req.abort();
     } else {
-      request.continue();
+      req.continue();
     }
   });
 
-  await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115 Safari/537.36');
+  await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
   await page.evaluateOnNewDocument(() => {
-    Object.defineProperty(navigator, 'webdriver', {
-      get: () => false,
-    });
+    Object.defineProperty(navigator, 'webdriver', { get: () => undefined });
   });
 
-  // Use Google to search with "movie rating" prepended
- const searchUrl = `https://www.google.com/search?q=movie+rating+${encodeURIComponent(query)}`;
+  // ✅ FIXED: No extra spaces
+const searchUrl = `https://www.google.com/search?q=movie+rating+${encodeURIComponent(query)}`;
   await page.goto(searchUrl, {
     waitUntil: 'domcontentloaded',
     timeout: 10000
   });
 
- let rating;
-try {
-  // Try first div (span.gsrt.KMdzJ)
-  rating = await page.$eval('span.gsrt.KMdzJ', el => el.textContent.trim());
-} catch {
-  // If not found, try second div (span.yi40Hd.YrbPuc)
+  // ✅ Handle Google cookie consent (2025+)
   try {
-    rating = await page.$eval('span.yi40Hd.YrbPuc', el => el.textContent.trim());
-  } catch {
-    // If both are not found, set 'Rating not found'
+    await page.waitForSelector('#L2AGLb, button[aria-label="Accept all"]', { timeout: 3000 });
+    await page.click('#L2AGLb, button[aria-label="Accept all"]');
+    await page.waitForTimeout(1000);
+  } catch (e) {
+    // Ignore
+  }
+
+  let rating = 'Rating not found';
+  try {
+    const texts = await page.evaluate(() =>
+      Array.from(document.querySelectorAll('span, div, a'))
+        .map(el => el.textContent.trim())
+        .filter(txt => txt.length > 0)
+    );
+
+    const plainRating = texts.find(txt => {
+      const n = parseFloat(txt);
+      return !isNaN(n) && n >= 1.0 && n <= 10.0 && txt.includes('.');
+    });
+
+    const slashRating = texts.find(txt => /^\d+\.\d+\/10$/.test(txt));
+
+    rating = plainRating || (slashRating ? slashRating.split('/')[0] : 'Rating not found');
+  } catch (e) {
     rating = 'Rating not found';
   }
-}
 
-console.log('Rating:', rating);
-
+  console.log('IMDb Rating for "%s": %s', query, rating);
   await browser.close();
-
-  // Redirect back to the home page with the search result
   res.redirect(`/?query=${encodeURIComponent(query)}&result=${encodeURIComponent(rating)}`);
 });
 
