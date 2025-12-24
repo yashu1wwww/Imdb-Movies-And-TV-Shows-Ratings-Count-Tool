@@ -1,11 +1,7 @@
 {
-  "name": "imdb-rating-scraper",
-  "version": "1.0.0",
-  "description": "Real-Time IMDb Ratings from Google Search",
-  "main": "server.js",
+  "name": "imdb-scraper",
   "scripts": {
-    "start": "node index.js",
-    "dev": "nodemon index.js"
+    "start": "node index.js"
   },
   "dependencies": {
     "express": "^4.18.2",
@@ -13,8 +9,5 @@
   },
   "engines": {
     "node": "18.x"
-  },
-  "keywords": ["imdb", "scraper", "puppeteer", "render"],
-  "author": "Yashwanth R",
-  "license": "MIT"
+  }
 }
