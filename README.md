@@ -6,6 +6,11 @@
   <img src="https://raw.github.com/yashu1wwww/Imdb-Movies-And-TV-Shows-Ratings-Count-Tool/refs/heads/main/imdb_ratings.png" alt="IMDb Ratings Tool Screenshot" width="700">
 </p>
 
+# To Get exact ratings
+
+enter movie name with year
+
+# ex: Avatar: Fire and Ash 2025
 
 ## To run this on your system,
 
