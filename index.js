@@ -1,8 +1,7 @@
 const express = require('express');
 const puppeteer = require('puppeteer');
 const app = express();
-const port = process.env.PORT || 3000;
-
+const port = 3000;
 
 // Serve static files if needed
 app.use(express.static(__dirname));
@@ -412,16 +411,15 @@ app.get('/search', async (req, res) => {
   const query = (req.query.query || '').trim();
   if (!query) return res.redirect('/');
 
-const browser = await puppeteer.launch({
-  headless: "new",
-  args: [
-    "--no-sandbox",
-    "--disable-setuid-sandbox",
-    "--disable-dev-shm-usage",
-    "--disable-gpu"
-  ]
-});
-
+  const browser = await puppeteer.launch({
+    headless: true,
+    args: [
+      '--no-sandbox',
+      '--disable-setuid-sandbox',
+      '--disable-blink-features=AutomationControlled',
+      '--disable-dev-shm-usage',
+    ],
+  });
 
   const page = await browser.newPage();
 
