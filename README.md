@@ -3,7 +3,7 @@
 # Enter Movie Name or tv shows to get ratings...
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/yashu1wwww/Imdb-Movies-And-TV-Shows-Ratings-Count-Tool/refs/heads/main/imdb_ratings.png" alt="IMDb Ratings Tool Screenshot" width="700">
+  <img src="https://raw.github.com/yashu1wwww/Imdb-Movies-And-TV-Shows-Ratings-Count-Tool/refs/heads/main/imdb_ratings.png" alt="IMDb Ratings Tool Screenshot" width="700">
 </p>
 
 
