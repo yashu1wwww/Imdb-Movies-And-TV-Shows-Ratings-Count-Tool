@@ -2,7 +2,7 @@
   "name": "imdb-rating-scraper",
   "version": "1.0.0",
   "description": "Fetch real-time IMDb ratings for movies & TV shows via Google Search",
-  "main": "server.js",
+  "main": "index.js",
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js"
