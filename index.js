@@ -81,13 +81,13 @@ app.get('/', (req, res) => {
         }
         
         .header-section {
-          margin-bottom: 30px;
+          margin-bottom: 5px; 
         }
         
         .imdb-logo {
-          height: 40px;
-          width: 80px;
-          margin-bottom: 15px;
+          height: 35px; 
+          width: 70px;
+          margin-bottom: 10px;
           filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
           transition: transform 0.3s ease;
         }
@@ -101,10 +101,10 @@ app.get('/', (req, res) => {
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
           background-clip: text;
-          font-size: 1.5rem;
+          font-size: 1.2rem; 
           font-weight: 700;
           text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-          margin-bottom: 20px;
+          margin-bottom: 5px; 
           animation: shimmer 2s infinite;
         }
         
@@ -113,7 +113,6 @@ app.get('/', (req, res) => {
           100% { background-position: 200% center; }
         }
         
-        }
         form {
           display: flex;
           flex-direction: column;
@@ -135,8 +134,8 @@ app.get('/', (req, res) => {
         }
         
         .visitors-section {
-          margin: 20px 0;
-          padding: 20px;
+          margin: 5px 0; 
+          padding: 15px; 
           background: rgba(255, 255, 255, 0.05);
           border-radius: 15px;
           border: 1px solid rgba(255, 255, 255, 0.1);
@@ -145,12 +144,20 @@ app.get('/', (req, res) => {
         .visitors-title {
           color: #FFD700;
           font-weight: 600;
-          margin-bottom: 15px;
-          font-size: 1.1rem;
+          margin-bottom: 8px;
+          font-size: 0.9rem; 
         }
         
+        /* CENTERED VISITOR COUNT */
         .counter-widget {
           transition: transform 0.3s ease;
+          display: block;
+          margin: 0 auto;
+        }
+        
+        .counter-widget img {
+          display: block;
+          margin: 0 auto;
         }
         
         .counter-widget:hover {
@@ -316,14 +323,17 @@ app.get('/', (req, res) => {
           }
         }
         
+        /* BLACK BOLD RATING LABEL */
         .rating-result strong {
-          color: #FFD700;
+          color: #000000;
           font-size: 1.1rem;
+          font-weight: 700;
         }
         
+        /* BLACK EXTRA BOLD RATING VALUE */
         .rating-value {
-          color: #FFA500;
-          font-weight: 700;
+          color: #000000;
+          font-weight: 900;
           font-size: 1.2rem;
         }
         
@@ -337,7 +347,7 @@ app.get('/', (req, res) => {
           }
           
           .main-title {
-            font-size: 1.2rem;
+            font-size: 1rem;
           }
           
           input[type="text"] {
@@ -384,7 +394,7 @@ app.get('/', (req, res) => {
           <div class="search-section">
             <div class="input-group">
               <i class="fas fa-search search-icon"></i>
-              <input type="text" id="query" name="query" value="${movieQuery}" placeholder="Ex: RRR or RRR Telugu" onfocus="this.value = ''; const ratingEl = document.getElementById('rating'); if(ratingEl) ratingEl.innerHTML = '';">
+              <input type="text" id="query" name="query" value="${movieQuery}" placeholder="Ex: RRR" onfocus="this.value = ''; const ratingEl = document.getElementById('rating'); if(ratingEl) ratingEl.innerHTML = '';">
             </div>
             
             <button type="submit">
@@ -412,7 +422,7 @@ app.get('/search', async (req, res) => {
   if (!query) return res.redirect('/');
 
   const browser = await puppeteer.launch({
-    headless: true,
+    headless: true, 
     args: [
       '--no-sandbox',
       '--disable-setuid-sandbox',
@@ -425,7 +435,7 @@ app.get('/search', async (req, res) => {
 
   await page.setRequestInterception(true);
   page.on('request', (req) => {
-    if (['image', 'stylesheet', 'font', 'media'].includes(req.resourceType())) {
+    if (['image', 'font', 'media'].includes(req.resourceType())) {
       req.abort();
     } else {
       req.continue();
@@ -437,48 +447,67 @@ app.get('/search', async (req, res) => {
     Object.defineProperty(navigator, 'webdriver', { get: () => undefined });
   });
 
-  // ✅ FIXED: No extra spaces
-const searchUrl = `https://www.google.com/search?q=movie+rating+${encodeURIComponent(query)}`;
+  const searchUrl = `https://www.google.com/search?q=movie+rating+${encodeURIComponent(query)}`;
+  
   await page.goto(searchUrl, {
-    waitUntil: 'domcontentloaded',
-    timeout: 10000
+    waitUntil: 'networkidle2', 
+    timeout: 15000
   });
 
-  // ✅ Handle Google cookie consent (2025+)
   try {
     await page.waitForSelector('#L2AGLb, button[aria-label="Accept all"]', { timeout: 3000 });
     await page.click('#L2AGLb, button[aria-label="Accept all"]');
-    await page.waitForTimeout(1000);
+    await new Promise(r => setTimeout(r, 1000)); 
   } catch (e) {
     // Ignore
   }
 
   let rating = 'Rating not found';
+  
   try {
-    const texts = await page.evaluate(() =>
-      Array.from(document.querySelectorAll('span, div, a'))
-        .map(el => el.textContent.trim())
-        .filter(txt => txt.length > 0)
-    );
-
-    const plainRating = texts.find(txt => {
-      const n = parseFloat(txt);
-      return !isNaN(n) && n >= 1.0 && n <= 10.0 && txt.includes('.');
+    const isCaptcha = await page.evaluate(() => {
+      const text = document.body.innerText.toLowerCase();
+      return text.includes('unusual traffic') || 
+             text.includes('captcha') ||
+             document.querySelector('#captcha-form') !== null;
     });
 
-    const slashRating = texts.find(txt => /^\d+\.\d+\/10$/.test(txt));
+    if (isCaptcha) {
+      rating = 'Google blocked the request (CAPTCHA). Try again later.';
+    } else {
+      // ✅ UPDATED LOGIC: Fetch specifically from the IMDb rating class to avoid fake data
+      rating = await page.evaluate(() => {
+        // 1. Target the specific class Google uses for IMDb ratings in the Knowledge Panel
+        const specificEl = document.querySelector('.IcqUx');
+        if (specificEl) {
+          const text = specificEl.textContent.trim();
+          const match = text.match(/(\d+\.\d+)\s*\/\s*10/);
+          if (match) return match[1];
+        }
 
-    rating = plainRating || (slashRating ? slashRating.split('/')[0] : 'Rating not found');
+        const elements = document.querySelectorAll('span, div');
+        for (const el of elements) {
+          const text = el.textContent.trim();
+          // Strict regex: must be exactly a decimal number followed by /10
+          if (/^\d+\.\d+\s*\/\s*10$/.test(text)) {
+            return text.match(/(\d+\.\d+)/)[1];
+          }
+        }
+        
+        return 'Rating not found';
+      });
+    }
   } catch (e) {
+    console.error('Extraction error:', e);
     rating = 'Rating not found';
   }
 
   console.log('IMDb Rating for "%s": %s', query, rating);
   await browser.close();
+  
   res.redirect(`/?query=${encodeURIComponent(query)}&result=${encodeURIComponent(rating)}`);
 });
 
 app.listen(port, () => {
   console.log(`✅ Server running at http://localhost:${port}`);
 });
-
